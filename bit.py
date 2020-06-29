@@ -32,10 +32,22 @@ def erase(n=1):
 def processArgs():
     if argv[1] == "push" or argv[1] == "p":
         if len(argv) > 2:
-            print(colorize("Versioning All Files...", tcolors.PURPLE_BOLD))
-            print(colorize("Committing...", tcolors.PURPLE_BOLD))
-            print(colorize("Pushing Changes...", tcolors.PURPLE_BOLD))
-            print(colorize("Done!", tcolors.GREEN_BOLD))
+            try:
+                print(colorize("Versioning All Files...", tcolors.PURPLE_BOLD))
+                subprocess.check_output(["git", "add", "."])
+                time.sleep(0.2)
+                erase()
+                print(colorize("Committing...", tcolors.PURPLE_BOLD))
+                subprocess.check_output(["git", "commit", "-m", argv[2]])
+                time.sleep(0.2)
+                erase()
+                print(colorize("Pushing Changes...", tcolors.PURPLE_BOLD))
+                subprocess.check_output(["git", "push", "origin", "master"])
+                time.sleep(0.2)
+                erase()
+                print(colorize("Done!", tcolors.GREEN_BOLD))
+            except:
+                print(colorize("Sequence exit due to crash. Fix errors and try again.", tcolors.RED))
         else:
             print(colorize("Error. Please specify a commit message. \n\nExample usage: bit push [message]", tcolors.RED))
     elif argv[1] == "init" or argv[1] == "i":
