@@ -1,6 +1,7 @@
 import os, subprocess, time, sys
 from sys import argv
 
+# ANSI escape codes for terminal coloring
 class tcolors:
     RESET = "\u001B[0m"
     BLACK = "\u001B[30m"
@@ -20,14 +21,18 @@ class tcolors:
     CYAN_BOLD = "\033[1;36m"
     WHITE_BOLD = "\033[1;37m"
 
+# a small function to colorize text
 def colorize(text, color):
     return color + text + tcolors.RESET
 
+# erase the line that was printed last (basically a carriage return function)
 def erase(n=1):
     for _ in range(n):
         sys.stdout.write('\x1b[1A')
         sys.stdout.write('\x1b[2K')
 
+
+# print the --help menu
 def helpMenu():
     print(colorize("Usage: ", tcolors.YELLOW_BOLD) + colorize("bit [OPTION] ...\n", tcolors.WHITE))
     print(colorize("An efficient git-cli alternative with power functions to speed your workflow.\n", tcolors.CYAN))
@@ -35,8 +40,10 @@ def helpMenu():
     print(colorize("\tinit, i <remote> <commit message>\tinit local repo, connect to remote, add/commit files, and push", tcolors.GREEN))
     print(colorize("\nReport bugs at https://github.com/Rohan-Bansal/Bit/issues.", tcolors.RED))
 
-
+# process the arguments passed to the tool
 def processArgs():
+
+    # push changes
     if argv[1] == "push" or argv[1] == "p":
         if len(argv) > 2:
             try:
@@ -57,6 +64,8 @@ def processArgs():
                 print(colorize("Sequence exit due to crash. Fix errors and try again.", tcolors.RED))
         else:
             print(colorize("Error. Please specify a commit message. \n\nExample usage: bit push [message]", tcolors.RED))
+
+    # init repo, then push
     elif argv[1] == "init" or argv[1] == "i":
         if len(argv) > 2:
             if ".git" in argv[2]:
@@ -85,10 +94,15 @@ def processArgs():
                 print(colorize("Error. The remote was not a valid.", tcolors.RED))
         else:
             print(colorize("Error. Please specify a remote origin. \n\nExample usage: bit init [origin] ['message']", tcolors.RED))
+
+    # print the help menu
     elif argv[1] == "--help":
         helpMenu()
 
+# program start
 if __name__ == "__main__":
+
+    # process only if arguments exist in the first place
     if len(argv) > 1:
         processArgs()
     else:
