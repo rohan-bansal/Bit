@@ -25,13 +25,15 @@ Install the tool:
 
 __NOTE: Parts of this tool will only work on Windows if a Bash emulator is used.__
 
+The following information and a bit more can be found by running `bit --help` in a terminal.
+
 Initializing a repository, connecting to a remote origin, adding all files in the directory, committing them, then finally pushing can all be done in one command!
 
 `bit init [remote] [message]`
 
-Another repetitive task is committing and pushing changes; To add all files, committ, and push:
+Another repetitive task is committing and pushing changes; To add all files, commit, and push:
 
 `bit push [message]`
 
 
-It even spices up a bland terminal with some epic colors.
+It even spices up a bland terminal with some epic colors! 
