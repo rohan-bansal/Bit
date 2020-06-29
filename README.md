@@ -1,3 +1,3 @@
 # Bit
 
-_An efficient git-cli alternative with power functions to speed your workflow._
+_An efficient git-cli alternative with a few power functions to reduce the amount of typing you have to do._

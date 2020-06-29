@@ -28,6 +28,13 @@ def erase(n=1):
         sys.stdout.write('\x1b[1A')
         sys.stdout.write('\x1b[2K')
 
+def helpMenu():
+    print(colorize("Usage: ", tcolors.YELLOW_BOLD) + colorize("bit [OPTION] ...\n", tcolors.WHITE))
+    print(colorize("An efficient git-cli alternative with power functions to speed your workflow.\n", tcolors.CYAN))
+    print(colorize("\tpush, p <commit message>\t\tadd files to repo, commit them, and push", tcolors.GREEN))
+    print(colorize("\tinit, i <remote> <commit message>\tinit local repo, connect to remote, add/commit files, and push", tcolors.GREEN))
+    print(colorize("\nReport bugs at https://github.com/Rohan-Bansal/Bit/issues.", tcolors.RED))
+
 
 def processArgs():
     if argv[1] == "push" or argv[1] == "p":
@@ -78,8 +85,8 @@ def processArgs():
                 print(colorize("Error. The remote was not a valid.", tcolors.RED))
         else:
             print(colorize("Error. Please specify a remote origin. \n\nExample usage: bit init [origin] ['message']", tcolors.RED))
-
-
+    elif argv[1] == "--help":
+        helpMenu()
 
 if __name__ == "__main__":
     if len(argv) > 1:
