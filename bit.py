@@ -25,6 +25,7 @@ class tcolors:
 def colorize(text, color):
     return color + text + tcolors.RESET
 
+# rotating spinner :D
 class Spinner:
 
     def __init__(self, message, color, delay=0.05):
@@ -119,20 +120,20 @@ def processArgs():
             if ".git" in argv[2]:
                 if len(argv) > 3:
                     try:
-                        print(colorize("Initializing Repository...", tcolors.PURPLE_BOLD))
-                        subprocess.check_output(["git", "init", "."])
-                        subprocess.check_output(["git", "remote", "add", "origin", argv[2]])
-                        time.sleep(0.2)
+                        with Spinner("Initializing Repository ", tcolors.PURPLE_BOLD):
+                            subprocess.check_output(["git", "init", "."])
+                            subprocess.check_output(["git", "remote", "add", "origin", argv[2]])
+                            time.sleep(0.2)
                         erase()
-                        print(colorize("Versioning/Committing...", tcolors.PURPLE_BOLD))
-                        subprocess.check_output(["git", "add", "."])
-                        subprocess.check_output(["git", "commit", "-m", argv[3]])
-                        time.sleep(0.2)
+                        with Spinner("Versioning/Committing ", tcolors.PURPLE_BOLD):
+                            subprocess.check_output(["git", "add", "."])
+                            subprocess.check_output(["git", "commit", "-m", argv[3]])
+                            time.sleep(0.2)
                         erase()
-                        print(colorize("Pushing Changes...", tcolors.PURPLE_BOLD))
-                        subprocess.check_output(["git", "push", "origin", "master"])
-                        time.sleep(0.2)
-                        erase()
+                        with Spinner("Versioning/Committing ", tcolors.PURPLE_BOLD):
+                            subprocess.check_output(["git", "push", "origin", "master"])
+                            time.sleep(0.2)
+                        erase()                        
                         print(colorize("Done!", tcolors.GREEN_BOLD))
                     except:
                         print(colorize("Sequence exit due to crash. Fix errors and try again.", tcolors.RED))
