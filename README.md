@@ -2,6 +2,8 @@
 
 _An efficient git-cli alternative with a few power functions to reduce the amount of typing you have to do._
 
+This project is not complete.
+
 ## What is this?
 
 The entire description is in the one-liner above. As of right now, it only has a few functions, but very useful ones!
