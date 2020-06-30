@@ -1,4 +1,4 @@
-import os, subprocess, time, sys
+import os, subprocess, time, sys, threading, itertools
 from sys import argv
 
 # ANSI escape codes for terminal coloring
@@ -25,10 +25,58 @@ class tcolors:
 def colorize(text, color):
     return color + text + tcolors.RESET
 
+class Spinner:
+
+    def __init__(self, message, color, delay=0.05):
+        self.spinner = itertools.cycle(['-', '/', '|', '\\'])
+        self.delay = delay
+        self.busy = False
+        self.color = color
+        self.spinner_visible = False
+        sys.stdout.write(colorize(message, color))
+
+    def write_next(self):
+        with self._screen_lock:
+            if not self.spinner_visible:
+                sys.stdout.write(colorize(next(self.spinner), self.color))
+                self.spinner_visible = True
+                sys.stdout.flush()
+
+    def remove_spinner(self, cleanup=False):
+        with self._screen_lock:
+            if self.spinner_visible:
+                sys.stdout.write('\b')
+                self.spinner_visible = False
+                if cleanup:
+                    sys.stdout.write(' ')
+                    sys.stdout.write('\r')
+                sys.stdout.flush()
+
+    def spinner_task(self):
+        while self.busy:
+            self.write_next()
+            time.sleep(self.delay)
+            self.remove_spinner()
+
+    def __enter__(self):
+        if sys.stdout.isatty():
+            self._screen_lock = threading.Lock()
+            self.busy = True
+            self.thread = threading.Thread(target=self.spinner_task)
+            self.thread.start()
+
+    def __exit__(self, exception, value, tb):
+        if sys.stdout.isatty():
+            self.busy = False
+            self.remove_spinner(cleanup=True)
+        else:
+            sys.stdout.write('\r')
+
+
 # erase the line that was printed last (basically a carriage return function)
 def erase(n=1):
     for _ in range(n):
-        sys.stdout.write('\x1b[1A')
+        # sys.stdout.write('\x1b[1A')
         sys.stdout.write('\x1b[2K')
 
 
@@ -47,17 +95,17 @@ def processArgs():
     if argv[1] == "push" or argv[1] == "p":
         if len(argv) > 2:
             try:
-                print(colorize("Versioning All Files...", tcolors.PURPLE_BOLD))
-                subprocess.check_output(["git", "add", "."])
-                time.sleep(0.3)
+                with Spinner("Versioning Files ", tcolors.PURPLE_BOLD):
+                    subprocess.check_output(["git", "add", "."])
+                    time.sleep(0.25)
                 erase()
-                print(colorize("Committing...", tcolors.PURPLE_BOLD))
-                subprocess.check_output(["git", "commit", "-m", argv[2]])
-                time.sleep(0.2)
+                with Spinner("Committing ", tcolors.PURPLE_BOLD):
+                    subprocess.check_output(["git", "commit", "-m", argv[2]])
+                    time.sleep(0.25)
                 erase()
-                print(colorize("Pushing Changes...", tcolors.PURPLE_BOLD))
-                subprocess.check_output(["git", "push", "origin", "master"])
-                time.sleep(0.2)
+                with Spinner("Pushing Changes ", tcolors.PURPLE_BOLD):
+                    subprocess.check_output(["git", "push", "origin", "master"])
+                    time.sleep(0.25)
                 erase()
                 print(colorize("Done!", tcolors.GREEN_BOLD))
             except:
