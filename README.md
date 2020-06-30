@@ -14,13 +14,17 @@ First, clone the repository with:
 
 `git clone https://github.com/Rohan-Bansal/Bit.git`
 
+It's suggested to place the folder in your home directory to keep stuff organized (even though the script will install it globally anyway).
+
 Give the install script run permissions:
 
 `chmod +x ./install.sh`
 
-Install the tool:
+Install the tool and restart your terminal:
 
-`./install.sh`
+`./install.sh && source ~/.bashrc`
+
+If you use Mac then replace `~/.bashrc` with `~/.zshrc`.
 
 
 ## Usage

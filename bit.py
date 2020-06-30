@@ -1,4 +1,5 @@
 import os, subprocess, time, sys, threading, itertools, traceback
+from cryptography.fernet import Fernet
 from sys import argv
 
 # ANSI escape codes for terminal coloring
@@ -24,6 +25,9 @@ class tcolors:
 # a small function to colorize text
 def colorize(text, color):
     return color + text + tcolors.RESET
+
+def getPath():
+    return os.path.dirname(os.path.abspath(__file__))
 
 # rotating spinner :D
 class Spinner:
@@ -59,7 +63,7 @@ class Spinner:
             time.sleep(self.delay)
             self.remove_spinner()
 
-    def __enter__(self):
+    def __enter__(self): 
         if sys.stdout.isatty():
             self._screen_lock = threading.Lock()
             self.busy = True
@@ -72,6 +76,11 @@ class Spinner:
             self.remove_spinner(cleanup=True)
         else:
             sys.stdout.write('\r')
+
+
+def writePassword(username, password):
+    with open(getPath() + "/data/creds.txt", 'a+') as file:
+        file.write(username + ", " + password + "\n")
 
 
 # erase the line that was printed last (basically a carriage return function)
@@ -161,12 +170,38 @@ def processArgs():
             initRepo(False)
         else:
             initRepo()
+
+    elif argv[1] == "pass" or argv[1] == "w":
+        username = input(colorize("Username: ", tcolors.YELLOW_BOLD))
+        password = input(colorize("Password: ", tcolors.YELLOW_BOLD))
+        with Spinner("Processing ", tcolors.PURPLE_BOLD):
+            writePassword(username, password)
+            time.sleep(0.5)
+        erase()
+        print(colorize("Credentials Set!", tcolors.GREEN_BOLD))
+
     # print the help menu
     elif argv[1] == "--help":
         helpMenu()
 
+    else:
+        print(colorize("Unknown. Use ", tcolors.RED) + colorize("bit --help", tcolors.RED_BOLD) + colorize(" for correct usage.", tcolors.RED))
 # program start
 if __name__ == "__main__":
+
+    if not os.path.isdir(getPath() + "/data"):
+        with Spinner("First Run - Generating Directories ", tcolors.PURPLE_BOLD):
+            os.mkdir(getPath() + "/data")
+            time.sleep(0.25)
+        erase()
+    if not os.path.isfile(getPath() + "/data/key.key"):
+        key = Fernet.generate_key()
+        with Spinner("First Run - Generating Key ", tcolors.PURPLE_BOLD):
+            with open(getPath() + "/data/key.key", "wb") as key_file:
+                key_file.write(key)
+            time.sleep(0.25)
+        erase()
+       
 
     # process only if arguments exist in the first place
     if len(argv) > 1:
