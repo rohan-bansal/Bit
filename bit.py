@@ -110,7 +110,7 @@ def initRepo(localInit=True):
                         time.sleep(0.2)
                     erase()
                     DEVNULL = open(os.devnull, 'w')
-                    with Spinner("Pushing Changes ", tcolors.PURPLE_BOLD):
+                    with Spinner("Pushing Modifications ", tcolors.PURPLE_BOLD):
                         subprocess.check_call(["git", "push", "origin", "master"], stdout=DEVNULL, stderr=subprocess.STDOUT)
                         time.sleep(0.2)
                     DEVNULL.close()
