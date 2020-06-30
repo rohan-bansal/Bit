@@ -104,9 +104,11 @@ def processArgs():
                     subprocess.check_output(["git", "commit", "-m", argv[2]])
                     time.sleep(0.25)
                 erase()
+                DEVNULL = open(os.devnull, 'w')
                 with Spinner("Pushing Changes ", tcolors.PURPLE_BOLD):
                     subprocess.check_call(["git", "push", "origin", "master"], stdout=DEVNULL, stderr=subprocess.STDOUT)
                     time.sleep(0.25)
+                DEVNULL.close()
                 erase()
                 print(colorize("Done!", tcolors.GREEN_BOLD))
             except Exception:
@@ -131,9 +133,11 @@ def processArgs():
                             subprocess.check_output(["git", "commit", "-m", argv[3]])
                             time.sleep(0.2)
                         erase()
+                        DEVNULL = open(os.devnull, 'w')
                         with Spinner("Versioning/Committing ", tcolors.PURPLE_BOLD):
                             subprocess.check_call(["git", "push", "origin", "master"], stdout=DEVNULL, stderr=subprocess.STDOUT)
                             time.sleep(0.2)
+                        DEVNULL.close()
                         erase()                        
                         print(colorize("Done!", tcolors.GREEN_BOLD))
                     except:
