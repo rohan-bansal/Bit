@@ -1,4 +1,4 @@
-import os, subprocess, time, sys, threading, itertools
+import os, subprocess, time, sys, threading, itertools, traceback
 from sys import argv
 
 # ANSI escape codes for terminal coloring
@@ -109,8 +109,9 @@ def processArgs():
                     time.sleep(0.25)
                 erase()
                 print(colorize("Done!", tcolors.GREEN_BOLD))
-            except:
+            except Exception:
                 print(colorize("Sequence exit due to crash. Fix errors and try again.", tcolors.RED))
+                traceback.print_exc()
         else:
             print(colorize("Error. Please specify a commit message. \n\nExample usage: bit push [message]", tcolors.RED))
 
@@ -137,6 +138,7 @@ def processArgs():
                         print(colorize("Done!", tcolors.GREEN_BOLD))
                     except:
                         print(colorize("Sequence exit due to crash. Fix errors and try again.", tcolors.RED))
+                        traceback.print_exc()
                 else:
                     print(colorize("Error. Please specify a commit message, \n\nExample usage: bit init [origin] ['message']", tcolors.RED))
             else:
