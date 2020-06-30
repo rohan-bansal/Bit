@@ -49,7 +49,7 @@ def processArgs():
             try:
                 print(colorize("Versioning All Files...", tcolors.PURPLE_BOLD))
                 subprocess.check_output(["git", "add", "."])
-                time.sleep(0.2)
+                time.sleep(0.3)
                 erase()
                 print(colorize("Committing...", tcolors.PURPLE_BOLD))
                 subprocess.check_output(["git", "commit", "-m", argv[2]])
