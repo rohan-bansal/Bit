@@ -114,7 +114,7 @@ def initRepo(localInit=True):
                         subprocess.check_call(["git", "push", "origin", "master"], stdout=DEVNULL, stderr=subprocess.STDOUT)
                         time.sleep(0.2)
                     DEVNULL.close()
-                    erase()                        
+                    erase()
                     print(colorize("Done!", tcolors.GREEN_BOLD))
                 except:
                     print(colorize("Sequence exit due to crash. Fix errors and try again.", tcolors.RED))
