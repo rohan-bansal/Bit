@@ -78,9 +78,38 @@ class Spinner:
             sys.stdout.write('\r')
 
 
+def load_key():
+    return open(getPath() + "/data/key.key", "rb").read()
+
+
 def writePassword(username, password):
     with open(getPath() + "/data/creds.txt", 'a+') as file:
-        file.write(username + ", " + password + "\n")
+        msg = username + ", " + password + "\n"
+        file.write(msg)
+    encrypt(getPath() + "/data/creds.txt")
+
+
+def encrypt(filename):
+    f = Fernet(load_key())
+    
+    with open(filename, "rb") as file:
+        file_data = file.read()
+
+    encrypted_data = f.encrypt(file_data)
+
+    with open(filename, "wb") as file:
+        file.write(encrypted_data)
+
+def decrypt(filename):
+    f = Fernet(load_key())
+
+    with open(filename, "rb") as file:
+        encrypted_data = file.read()
+
+    decrypted_data = f.decrypt(encrypted_data)
+
+    with open(filename, "wb") as file:
+        file.write(decrypted_data)
 
 
 # erase the line that was printed last (basically a carriage return function)
@@ -186,7 +215,10 @@ def processArgs():
 
     else:
         print(colorize("Unknown. Use ", tcolors.RED) + colorize("bit --help", tcolors.RED_BOLD) + colorize(" for correct usage.", tcolors.RED))
-# program start
+
+def load_key():
+    return open(getPath() + "/data/key.key", "rb").read()
+
 if __name__ == "__main__":
 
     if not os.path.isdir(getPath() + "/data"):
