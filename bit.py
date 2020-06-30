@@ -89,6 +89,44 @@ def helpMenu():
     print(colorize("\tinit, i <remote> <commit message>\tinit local repo, connect to remote, add/commit files, and push", tcolors.GREEN))
     print(colorize("\nReport bugs at https://github.com/Rohan-Bansal/Bit/issues.", tcolors.RED))
 
+def initRepo(localInit=True):
+    if len(argv) > 2:
+        if ".git" in argv[2]:
+            if len(argv) > 3:
+                try:
+                    if localInit == True:
+                        with Spinner("Initializing Repository ", tcolors.PURPLE_BOLD):
+                            subprocess.check_output(["git", "init", "."])
+                            subprocess.check_output(["git", "remote", "add", "origin", argv[2]])
+                            time.sleep(0.2)
+                        erase()
+                    else:
+                        with Spinner("Detecting Repository ", tcolors.PURPLE_BOLD):
+                            time.sleep(0.3)
+                        erase()
+                    with Spinner("Versioning/Committing ", tcolors.PURPLE_BOLD):
+                        subprocess.check_output(["git", "add", "."])
+                        subprocess.check_output(["git", "commit", "-m", argv[3]])
+                        time.sleep(0.2)
+                    erase()
+                    DEVNULL = open(os.devnull, 'w')
+                    with Spinner("Versioning/Committing ", tcolors.PURPLE_BOLD):
+                        subprocess.check_call(["git", "push", "origin", "master"], stdout=DEVNULL, stderr=subprocess.STDOUT)
+                        time.sleep(0.2)
+                    DEVNULL.close()
+                    erase()                        
+                    print(colorize("Done!", tcolors.GREEN_BOLD))
+                except:
+                    print(colorize("Sequence exit due to crash. Fix errors and try again.", tcolors.RED))
+                    traceback.print_exc()
+            else:
+                print(colorize("Error. Please specify a commit message, \n\nExample usage: bit init [origin] ['message']", tcolors.RED))
+        else:
+            print(colorize("Error. The remote was not a valid.", tcolors.RED))
+    else:
+        print(colorize("Error. Please specify a remote origin. \n\nExample usage: bit init [origin] ['message']", tcolors.RED))
+
+
 # process the arguments passed to the tool
 def processArgs():
 
@@ -119,37 +157,10 @@ def processArgs():
 
     # init repo, then push
     elif argv[1] == "init" or argv[1] == "i":
-        if len(argv) > 2:
-            if ".git" in argv[2]:
-                if len(argv) > 3:
-                    try:
-                        with Spinner("Initializing Repository ", tcolors.PURPLE_BOLD):
-                            subprocess.check_output(["git", "init", "."])
-                            subprocess.check_output(["git", "remote", "add", "origin", argv[2]])
-                            time.sleep(0.2)
-                        erase()
-                        with Spinner("Versioning/Committing ", tcolors.PURPLE_BOLD):
-                            subprocess.check_output(["git", "add", "."])
-                            subprocess.check_output(["git", "commit", "-m", argv[3]])
-                            time.sleep(0.2)
-                        erase()
-                        DEVNULL = open(os.devnull, 'w')
-                        with Spinner("Versioning/Committing ", tcolors.PURPLE_BOLD):
-                            subprocess.check_call(["git", "push", "origin", "master"], stdout=DEVNULL, stderr=subprocess.STDOUT)
-                            time.sleep(0.2)
-                        DEVNULL.close()
-                        erase()                        
-                        print(colorize("Done!", tcolors.GREEN_BOLD))
-                    except:
-                        print(colorize("Sequence exit due to crash. Fix errors and try again.", tcolors.RED))
-                        traceback.print_exc()
-                else:
-                    print(colorize("Error. Please specify a commit message, \n\nExample usage: bit init [origin] ['message']", tcolors.RED))
-            else:
-                print(colorize("Error. The remote was not a valid.", tcolors.RED))
+        if os.path.exists(".git"):
+            initRepo(False)
         else:
-            print(colorize("Error. Please specify a remote origin. \n\nExample usage: bit init [origin] ['message']", tcolors.RED))
-
+            initRepo()
     # print the help menu
     elif argv[1] == "--help":
         helpMenu()
