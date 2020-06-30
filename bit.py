@@ -105,7 +105,7 @@ def processArgs():
                     time.sleep(0.25)
                 erase()
                 with Spinner("Pushing Changes ", tcolors.PURPLE_BOLD):
-                    subprocess.check_output(["git", "push", "origin", "master"])
+                    subprocess.check_call(["git", "push", "origin", "master"])
                     time.sleep(0.25)
                 erase()
                 print(colorize("Done!", tcolors.GREEN_BOLD))
@@ -131,7 +131,7 @@ def processArgs():
                             time.sleep(0.2)
                         erase()
                         with Spinner("Versioning/Committing ", tcolors.PURPLE_BOLD):
-                            subprocess.check_output(["git", "push", "origin", "master"])
+                            subprocess.check_call(["git", "push", "origin", "master"])
                             time.sleep(0.2)
                         erase()                        
                         print(colorize("Done!", tcolors.GREEN_BOLD))
