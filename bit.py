@@ -26,12 +26,14 @@ class tcolors:
 def colorize(text, color):
     return color + text + tcolors.RESET
 
+# get the path of this file
 def getPath():
     return os.path.dirname(os.path.abspath(__file__))
 
 # rotating spinner :D
 class Spinner:
 
+    # write the spinner text
     def __init__(self, message, color, delay=0.05):
         self.spinner = itertools.cycle(['-', '/', '|', '\\'])
         self.delay = delay
@@ -40,6 +42,7 @@ class Spinner:
         self.spinner_visible = False
         sys.stdout.write(colorize(message, color))
 
+    # cycle the spinning dial
     def write_next(self):
         with self._screen_lock:
             if not self.spinner_visible:
@@ -47,6 +50,7 @@ class Spinner:
                 self.spinner_visible = True
                 sys.stdout.flush()
 
+    # remove spinner after finished
     def remove_spinner(self, cleanup=False):
         with self._screen_lock:
             if self.spinner_visible:
@@ -78,17 +82,18 @@ class Spinner:
             sys.stdout.write('\r')
 
 
+# TODO load the key generated at first run
 def load_key():
     return open(getPath() + "/data/key.key", "rb").read()
 
-
+# TODO write the password to a file to be used elsewhere (encrypted)
 def writePassword(username, password):
     with open(getPath() + "/data/creds.txt", 'a+') as file:
         msg = username + ", " + password + "\n"
         file.write(msg)
     encrypt(getPath() + "/data/creds.txt")
 
-
+# TODO encrypt the keyfile
 def encrypt(filename):
     f = Fernet(load_key())
     
@@ -100,6 +105,7 @@ def encrypt(filename):
     with open(filename, "wb") as file:
         file.write(encrypted_data)
 
+# TODO decrypt the keyfile
 def decrypt(filename):
     f = Fernet(load_key())
 
@@ -118,10 +124,11 @@ def erase(n=1):
         # sys.stdout.write('\x1b[1A')
         sys.stdout.write('\x1b[2K')
 
-
+# check if a .git folder exists in the current directory
 def gitFolderExists():
     return os.path.exists(".git")
 
+# update git repo credentials in a directory, using set-url
 def updateRepositoryCredentials(username, password):
     url = subprocess.run(["git", "config", "--get", "remote.origin.url"], stdout=subprocess.PIPE)
     url = url.stdout.decode('utf-8').replace("\n", "").split("//")
@@ -130,7 +137,7 @@ def updateRepositoryCredentials(username, password):
     url_complete = url[0] + url[1]
     subprocess.check_output(["git", "remote", "set-url", "origin", url_complete])
 
-
+# ask user for credentials, set them, update
 def getCreds():
     username = input(colorize("Username: ", tcolors.YELLOW_BOLD))
     password = input(colorize("Password: ", tcolors.YELLOW_BOLD))
@@ -161,9 +168,11 @@ def helpMenu():
     print(colorize("\tpush, p <commit message>\t\tadd files to repo, commit them, and push", tcolors.GREEN))
     print(colorize("\tinit, i <remote> <commit message>\tinit local repo, connect to remote, add/commit files, and push", tcolors.GREEN))
     print(colorize("\tclone, c <remote>\t\t\tclone repository and cd into it afterwards", tcolors.GREEN))
-    print(colorize("\tpass, w\t\t\t\t\tset username/password of git repo in current directory", tcolors.GREEN))
+    print(colorize("\tpass, w\t\t\t\t\tset username/password of git repo manually in current directory", tcolors.GREEN))
     print(colorize("\nReport bugs at https://github.com/Rohan-Bansal/Bit/issues.", tcolors.RED))
 
+
+# initialize repository, with option to ignore git init if folder exists
 def initRepo(localInit=True):
     if len(argv) > 2:
         if ".git" in argv[2]:
@@ -254,9 +263,11 @@ def processArgs():
         else:
             initRepo()
 
+    # change password for repository manually
     elif argv[1] == "pass" or argv[1] == "w":
         getCreds()
 
+    # clone repository and cd into it afterwards
     elif argv[1] == "clone" or argv[1] == "c":
         if len(argv) > 2:
             DEVNULL = open(os.devnull, 'w')
@@ -279,16 +290,20 @@ def processArgs():
     else:
         print(colorize("Unknown. Use ", tcolors.RED) + colorize("bit --help", tcolors.RED_BOLD) + colorize(" for correct usage.", tcolors.RED))
 
+# load the encrypted keyfile
 def load_key():
     return open(getPath() + "/data/key.key", "rb").read()
 
 if __name__ == "__main__":
 
+    # check if data folder exists, if not, create it
     if not os.path.isdir(getPath() + "/data"):
         with Spinner("First Run - Generating Directories ", tcolors.PURPLE_BOLD):
             os.mkdir(getPath() + "/data")
             time.sleep(0.25)
         erase()
+
+    # check if keyfile exists, if not, create it
     if not os.path.isfile(getPath() + "/data/key.key"):
         key = Fernet.generate_key()
         with Spinner("First Run - Generating Key ", tcolors.PURPLE_BOLD):
@@ -304,4 +319,5 @@ if __name__ == "__main__":
     else:
         print(colorize("Error. Use ", tcolors.RED) + colorize("bit --help", tcolors.RED_BOLD) + colorize(" for correct usage.", tcolors.RED))
 
+    # unfreeze terminal, keep workspace changes
     os.system("/bin/bash")
