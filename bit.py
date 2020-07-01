@@ -193,8 +193,9 @@ def processArgs():
                 erase()
                 print(colorize("Done!", tcolors.GREEN_BOLD))
             except Exception:
-                print(colorize("Sequence exit due to crash. Fix errors and try again.", tcolors.RED))
-                traceback.print_exc()
+                print(colorize("Sequence exit due to crash. Run again with -t to show the traceback.", tcolors.RED))
+                if "-t" in argv:
+                    traceback.print_exc()
         else:
             print(colorize("Error. Please specify a commit message. \n\nExample usage: bit push [message]", tcolors.RED))
 
