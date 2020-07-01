@@ -185,7 +185,10 @@ def initRepo(localInit=True):
                             erase()
                     with Spinner("Versioning/Committing ", tcolors.PURPLE_BOLD):
                         subprocess.check_output(["git", "add", "."])
-                        subprocess.check_output(["git", "commit", "-m", argv[3]])
+                        try:
+                            subprocess.check_output(["git", "commit", "-m", argv[3]])
+                        except:
+                            pass
                         time.sleep(0.2)
                     erase()
                     DEVNULL = open(os.devnull, 'w')
@@ -218,8 +221,14 @@ def processArgs():
                     subprocess.check_output(["git", "add", "."])
                     time.sleep(0.25)
                 erase()
+                if subprocess.run(["git", "config", "--get", "remote.origin.url"], stdout=subprocess.PIPE).stdout.decode('utf-8').count(':') == 1:
+                    getCreds()
+                    erase()
                 with Spinner("Committing ", tcolors.PURPLE_BOLD):
-                    subprocess.check_output(["git", "commit", "-m", argv[2]])
+                    try:
+                        subprocess.check_output(["git", "commit", "-m", argv[2]])
+                    except:
+                        pass
                     time.sleep(0.25)
                 erase()
                 DEVNULL = open(os.devnull, 'w')
