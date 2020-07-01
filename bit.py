@@ -160,7 +160,8 @@ def initRepo(localInit=True):
                     print(colorize("Done!", tcolors.GREEN_BOLD))
                 except:
                     print(colorize("Sequence exit due to crash. Run again with -t to show the traceback.", tcolors.RED))
-                    traceback.print_exc()
+                    if "-t" in argv:
+                        traceback.print_exc()
             else:
                 print(colorize("Error. Please specify a commit message, \n\nExample usage: bit init [origin] ['message']", tcolors.RED))
         else:
