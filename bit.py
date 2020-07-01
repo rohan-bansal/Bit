@@ -1,4 +1,5 @@
 import os, subprocess, time, sys, threading, itertools, traceback
+from getpass import getpass
 from cryptography.fernet import Fernet
 from sys import argv
 
@@ -140,7 +141,7 @@ def updateRepositoryCredentials(username, password):
 # ask user for credentials, set them, update
 def getCreds():
     username = input(colorize("Username: ", tcolors.YELLOW_BOLD))
-    password = input(colorize("Password: ", tcolors.YELLOW_BOLD))
+    password = getpass(colorize("Password: ", tcolors.YELLOW_BOLD))
     with Spinner("Processing Password ", tcolors.PURPLE_BOLD):
         writePassword(username, password) 
         time.sleep(0.5)
