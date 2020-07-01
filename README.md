@@ -33,6 +33,10 @@ __NOTE: Parts of this tool will only work on Windows if a Bash emulator is used.
 
 The following information and a bit more can be found by running `bit --help` in a terminal.
 
+This project started with the following command (one less to type since it was used so often) that clones the repository and cd's into it afterwards:
+
+`bit clone [remote]`
+
 Initializing a repository, connecting to a remote origin, adding all files in the directory, committing them, then finally pushing can all be done in one command!
 
 `bit init [remote] [message]`
@@ -43,3 +47,9 @@ Another repetitive task is committing and pushing changes; To add all files, com
 
 
 It even spices up a bland terminal with some epic colors! 
+
+## To Do
+
+- Progress bar instead of spinning dial
+- Optimize
+- Utilize encryption

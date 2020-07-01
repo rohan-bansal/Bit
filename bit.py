@@ -160,6 +160,8 @@ def helpMenu():
     print(colorize("An efficient git-cli alternative with power functions to speed your workflow.\n", tcolors.CYAN))
     print(colorize("\tpush, p <commit message>\t\tadd files to repo, commit them, and push", tcolors.GREEN))
     print(colorize("\tinit, i <remote> <commit message>\tinit local repo, connect to remote, add/commit files, and push", tcolors.GREEN))
+    print(colorize("\tclone, c <remote>\t\t\tclone repository and cd into it afterwards", tcolors.GREEN))
+    print(colorize("\tpass, w\t\t\t\t\tset username/password of git repo in current directory", tcolors.GREEN))
     print(colorize("\nReport bugs at https://github.com/Rohan-Bansal/Bit/issues.", tcolors.RED))
 
 def initRepo(localInit=True):
@@ -255,6 +257,21 @@ def processArgs():
     elif argv[1] == "pass" or argv[1] == "w":
         getCreds()
 
+    elif argv[1] == "clone" or argv[1] == "c":
+        if len(argv) > 2:
+            DEVNULL = open(os.devnull, 'w')
+            with Spinner("Cloning ", tcolors.BLUE_BOLD):
+                subprocess.check_call(["git", "clone", argv[2]], stdout=DEVNULL, stderr=subprocess.STDOUT)
+                directory = argv[2].split("/")[-1].split(".")[0]
+                # subprocess.check_call(["cd", directory])
+                os.chdir(os.getcwd() + "/" + directory)
+                time.sleep(0.25)
+            DEVNULL.close()
+            erase()
+            print(colorize("Done!", tcolors.GREEN_BOLD))
+        else:
+            print(colorize("Error. Please specify a remote. \n\nExample usage: bit clone [remote]", tcolors.RED))       
+
     # print the help menu
     elif argv[1] == "--help":
         helpMenu()
@@ -286,3 +303,5 @@ if __name__ == "__main__":
         processArgs()
     else:
         print(colorize("Error. Use ", tcolors.RED) + colorize("bit --help", tcolors.RED_BOLD) + colorize(" for correct usage.", tcolors.RED))
+
+    os.system("/bin/bash")
