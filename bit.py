@@ -122,6 +122,37 @@ def erase(n=1):
 def gitFolderExists():
     return os.path.exists(".git")
 
+def updateRepositoryCredentials(username, password):
+    url = subprocess.run(["git", "config", "--get", "remote.origin.url"], stdout=subprocess.PIPE)
+    url = url.stdout.decode('utf-8').replace("\n", "").split("//")
+    url[0] += "//"
+    url[1] = username + ":" + password + "@" + url[1]
+    url_complete = url[0] + url[1]
+    subprocess.check_output(["git", "remote", "set-url", "origin", url_complete])
+
+
+def getCreds():
+    username = input(colorize("Username: ", tcolors.YELLOW_BOLD))
+    password = input(colorize("Password: ", tcolors.YELLOW_BOLD))
+    with Spinner("Processing Password ", tcolors.PURPLE_BOLD):
+        writePassword(username, password) 
+        time.sleep(0.5)
+    erase()
+
+    norepo = False
+    with Spinner("Updating Repository Info ", tcolors.PURPLE_BOLD):
+        if gitFolderExists():
+            updateRepositoryCredentials(username, password)
+        else:
+            norepo = True
+        time.sleep(0.9)  
+    erase()
+
+    if norepo == True:
+        print(colorize("Git repository does not exist in this directory.", tcolors.RED_BOLD))
+    else:
+        print(colorize("Credentials Set!", tcolors.GREEN_BOLD))
+
 
 # print the --help menu
 def helpMenu():
@@ -142,10 +173,16 @@ def initRepo(localInit=True):
                             subprocess.check_output(["git", "remote", "add", "origin", argv[2]])
                             time.sleep(0.2)
                         erase()
+                        if subprocess.run(["git", "config", "--get", "remote.origin.url"], stdout=subprocess.PIPE).stdout.decode('utf-8').count(':') == 1:
+                            getCreds()
+                            erase()
                     else:
                         with Spinner("Detecting Repository ", tcolors.PURPLE_BOLD):
                             time.sleep(0.3)
                         erase()
+                        if subprocess.run(["git", "config", "--get", "remote.origin.url"], stdout=subprocess.PIPE).stdout.decode('utf-8').count(':') == 1:
+                            getCreds()
+                            erase()
                     with Spinner("Versioning/Committing ", tcolors.PURPLE_BOLD):
                         subprocess.check_output(["git", "add", "."])
                         subprocess.check_output(["git", "commit", "-m", argv[3]])
@@ -207,25 +244,7 @@ def processArgs():
             initRepo()
 
     elif argv[1] == "pass" or argv[1] == "w":
-        username = input(colorize("Username: ", tcolors.YELLOW_BOLD))
-        password = input(colorize("Password: ", tcolors.YELLOW_BOLD))
-        with Spinner("Processing Password ", tcolors.PURPLE_BOLD):
-            writePassword(username, password) 
-            time.sleep(0.5)
-        erase()
-
-        with Spinner("Updating Repository Info ", tcolors.PURPLE_BOLD):
-            if gitFolderExists():
-                url = subprocess.run(["git", "config", "--get", "remote.origin.url"], stdout=subprocess.PIPE)
-                url = url.stdout.decode('utf-8').replace("\n", "").split("//")
-                url[0] += "//"
-                url[1] = username + ":" + password + "@" + url[1]
-                url_complete = url[0] + url[1]
-                subprocess.check_output(["git", "remote", "set-url", "origin", url_complete])
-            time.sleep(0.9)  
-        erase()
-
-        print(colorize("Credentials Set!", tcolors.GREEN_BOLD))
+        getCreds()
 
     # print the help menu
     elif argv[1] == "--help":
