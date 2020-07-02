@@ -2,9 +2,9 @@ import os, subprocess, time, sys, threading, itertools, traceback, platform
 from getpass import getpass
 from cryptography.fernet import Fernet
 from sys import argv
-from tcolors import tcolors
-from spinner import Spinner
-from colorizer import colorize
+from lib.tcolors import tcolors
+from lib.spinner import Spinner
+from lib.colorizer import colorize
 
 # get the path of this file
 def getPath():
