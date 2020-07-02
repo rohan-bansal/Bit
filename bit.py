@@ -1,4 +1,4 @@
-import os, subprocess, time, sys, threading, itertools, traceback
+import os, subprocess, time, sys, threading, itertools, traceback, platform
 from getpass import getpass
 from cryptography.fernet import Fernet
 from sys import argv
@@ -322,4 +322,7 @@ if __name__ == "__main__":
         print(colorize("Error. Use ", tcolors.RED) + colorize("bit --help", tcolors.RED_BOLD) + colorize(" for correct usage.", tcolors.RED))
 
     # unfreeze terminal, keep workspace changes
-    os.system("/bin/bash")
+    if platform.system() == "Linux" or platform.system == "Windows":
+        os.system("/bin/bash")
+    else:
+        os.system("/bin/zsh")
