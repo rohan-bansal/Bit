@@ -175,6 +175,7 @@ def helpMenu():
 
 # initialize repository, with option to ignore git init if folder exists
 def initRepo(localInit=True):
+    
     if len(argv) > 2:
         if ".git" in argv[2]:
             if len(argv) > 3:
