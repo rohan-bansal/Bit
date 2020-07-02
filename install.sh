@@ -10,7 +10,7 @@ if [[ "$OSTYPE" == "linux-gnu"* ]]; then
     echo "alias bit='python3 $loc'" >> ~/.bashrc
 
 elif [[ "$OSTYPE" == "darwin"* ]]; then
-    echo "alias bit='python3 $loc'" >> ~/.zshrc
+    echo "alias bit='python3 $loc'" >> ~/.zprofile
 
 elif [[ "$OSTYPE" == "cygwin" ]]; then
     echo "alias bit='python3 $loc'" >> ~/.bashrc
