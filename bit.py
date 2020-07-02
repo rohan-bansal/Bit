@@ -2,93 +2,22 @@ import os, subprocess, time, sys, threading, itertools, traceback, platform
 from getpass import getpass
 from cryptography.fernet import Fernet
 from sys import argv
-
-# ANSI escape codes for terminal coloring
-class tcolors:
-    RESET = "\u001B[0m"
-    BLACK = "\u001B[30m"
-    RED = "\u001B[31m"
-    GREEN = "\u001B[32m"
-    YELLOW = "\u001B[33m"
-    BLUE = "\u001B[34m"
-    PURPLE = "\u001B[35m"
-    CYAN = "\u001B[36m"
-    WHITE = "\u001B[37m"
-    BLACK_BOLD = "\033[1;30m"
-    RED_BOLD = "\033[1;31m"
-    GREEN_BOLD = "\033[1;32m"
-    YELLOW_BOLD = "\033[1;33m"
-    BLUE_BOLD = "\033[1;34m"
-    PURPLE_BOLD = "\033[1;35m"
-    CYAN_BOLD = "\033[1;36m"
-    WHITE_BOLD = "\033[1;37m"
-
-# a small function to colorize text
-def colorize(text, color):
-    return color + text + tcolors.RESET
+from tcolors import tcolors
+from spinner import Spinner
+from colorizer import colorize
 
 # get the path of this file
 def getPath():
     return os.path.dirname(os.path.abspath(__file__))
 
-# rotating spinner :D
-class Spinner:
-
-    # write the spinner text
-    def __init__(self, message, color, delay=0.05):
-        self.spinner = itertools.cycle(['-', '/', '|', '\\'])
-        self.delay = delay
-        self.busy = False
-        self.color = color
-        self.spinner_visible = False
-        sys.stdout.write(colorize(message, color))
-
-    # cycle the spinning dial
-    def write_next(self):
-        with self._screen_lock:
-            if not self.spinner_visible:
-                sys.stdout.write(colorize(next(self.spinner), self.color))
-                self.spinner_visible = True
-                sys.stdout.flush()
-
-    # remove spinner after finished
-    def remove_spinner(self, cleanup=False):
-        with self._screen_lock:
-            if self.spinner_visible:
-                sys.stdout.write('\b')
-                self.spinner_visible = False
-                if cleanup:
-                    sys.stdout.write(' ')
-                    sys.stdout.write('\r')
-                sys.stdout.flush()
-
-    def spinner_task(self):
-        while self.busy:
-            self.write_next()
-            time.sleep(self.delay)
-            self.remove_spinner()
-
-    def __enter__(self): 
-        if sys.stdout.isatty():
-            self._screen_lock = threading.Lock()
-            self.busy = True
-            self.thread = threading.Thread(target=self.spinner_task)
-            self.thread.start()
-
-    def __exit__(self, exception, value, tb):
-        if sys.stdout.isatty():
-            self.busy = False
-            self.remove_spinner(cleanup=True)
-        else:
-            sys.stdout.write('\r')
-
-
 # TODO load the key generated at first run
 def load_key():
+
     return open(getPath() + "/data/key.key", "rb").read()
 
 # TODO write the password to a file to be used elsewhere (encrypted)
 def writePassword(username, password):
+
     with open(getPath() + "/data/creds.txt", 'a+') as file:
         msg = username + ", " + password + "\n"
         file.write(msg)
