@@ -23,6 +23,8 @@ def writePassword(username, password):
         file.write(msg)
     encrypt(getPath() + "/data/creds.txt")
 
+
+
 # TODO encrypt the keyfile
 def encrypt(filename):
     f = Fernet(load_key())
@@ -50,6 +52,7 @@ def decrypt(filename):
 
 # erase the line that was printed last (basically a carriage return function)
 def erase(n=1):
+    
     for _ in range(n):
         # sys.stdout.write('\x1b[1A')
         sys.stdout.write('\x1b[2K')
