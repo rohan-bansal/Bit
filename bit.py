@@ -8,6 +8,7 @@ from lib.colorizer import colorize
 
 # get the path of this file
 def getPath():
+    
     return os.path.dirname(os.path.abspath(__file__))
 
 # TODO load the key generated at first run
@@ -27,6 +28,7 @@ def writePassword(username, password):
 
 # TODO encrypt the keyfile
 def encrypt(filename):
+
     f = Fernet(load_key())
     
     with open(filename, "rb") as file:
@@ -52,7 +54,7 @@ def decrypt(filename):
 
 # erase the line that was printed last (basically a carriage return function)
 def erase(n=1):
-    
+
     for _ in range(n):
         # sys.stdout.write('\x1b[1A')
         sys.stdout.write('\x1b[2K')
