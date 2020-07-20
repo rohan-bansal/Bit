@@ -52,3 +52,4 @@ It even spices up a bland terminal with some epic colors!
 - Progress bar instead of spinning dial
 - Optimize
 - Utilize encryption
+- Support for 2FA
