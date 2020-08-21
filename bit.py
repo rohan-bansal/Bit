@@ -186,7 +186,7 @@ def processArgs():
                 erase()
                 print(colorize("Done!", tcolors.GREEN_BOLD))
             except Exception:
-                print(colorize("Sequence exit due to crash. If you have 2FA enabled, run ") + colorize("bit pass", tcolors.PURPLE_BOLD) + colorize(" and set the password to a Personal Access Token generated from GitHub's website. Run again with -t to show the traceback.", tcolors.RED))
+                print(colorize("Sequence exit due to crash. If you have 2FA enabled, run ", tcolors.RED) + colorize("bit pass", tcolors.PURPLE_BOLD) + colorize(" and set the password to a Personal Access Token generated from GitHub's website. Run again with -t to show the traceback.", tcolors.RED))
                 if "-t" in argv:
                     traceback.print_exc()
         else:
