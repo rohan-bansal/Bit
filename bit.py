@@ -255,7 +255,7 @@ if __name__ == "__main__":
     else:
         print(colorize("Error. Use ", tcolors.RED) + colorize("bit --help", tcolors.RED_BOLD) + colorize(" for correct usage.", tcolors.RED))
 
-    # unfreeze terminal, keep workspace changes
+    # unfreeze terminal, keep workspace changes, EXPERIMENTAL WINDOWS
     if platform.system() == "Linux" or platform.system == "Windows":
         os.system("/bin/bash")
     else:
