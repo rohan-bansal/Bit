@@ -1,7 +1,7 @@
 import os, sys, subprocess, argparse, time
 from lib.tcolors import tcolors
 from lib.spinner import Spinner
-from lib.textlib import colorize, getRandomPhrase
+from lib.textlib import colorize, getRandomPhrase, erase
 
 path = os.getcwd()
 
@@ -74,8 +74,12 @@ def pushChanges(commitBeforePush=False):
         try:
             subprocess.check_output(["git", "push", "origin", currentBranch],
                 stderr=subprocess.STDOUT)
-        except subprocess.CalledProcessError:
-            error("is local repository connected to remote?")
+        except subprocess.CalledProcessError as e:
+            erase();
+            if "git pull" in str(e.output):
+                error("mismatched repositories, pull first.")
+            else:
+                error("is local repository connected to remote?")
             return
         time.sleep(0.5)
 
@@ -96,6 +100,7 @@ def changeRemote(remote):
             subprocess.check_output(["git", "remote", "set-url" if originExists else "add", "origin", remote],
                 stderr=subprocess.STDOUT)
         except subprocess.CalledProcessError:
+            erase();
             error("action failed")
             return
         time.sleep(0.5)

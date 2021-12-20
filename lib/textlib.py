@@ -1,5 +1,6 @@
 from lib.tcolors import tcolors
 from random import choice
+import sys
 
 phrases = [
     "purged the optronic neogenic emergency rocket",
@@ -24,3 +25,7 @@ def colorize(text, color):
 
 def getRandomPhrase():
     return choice(phrases)
+
+def erase(n=1):
+    for _ in range(n):
+        sys.stdout.write('\x1b[2K')
