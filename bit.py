@@ -71,8 +71,33 @@ def pushChanges(commitBeforePush=False):
     print(colorize("pushing local " + currentBranch + " to remote", tcolors.GREEN_BOLD))
 
     with Spinner(" ", tcolors.CYAN_BOLD):
-        subprocess.check_output(["git", "push", "origin", currentBranch],
-            stderr=subprocess.STDOUT)
+        try:
+            subprocess.check_output(["git", "push", "origin", currentBranch],
+                stderr=subprocess.STDOUT)
+        except subprocess.CalledProcessError:
+            error("is local repository connected to remote?")
+            return
+        time.sleep(0.5)
+
+    print(colorize("done.", tcolors.GREEN_BOLD))
+
+def changeRemote(remote):
+    print(colorize("setting origin URL to ", tcolors.GREEN_BOLD) + colorize(remote, tcolors.CYAN))
+
+    originExists = True
+
+    try:
+        subprocess.check_output(["git", "config", "--get", "remote.origin.url"], stderr=subprocess.STDOUT)
+    except subprocess.CalledProcessError:
+        originExists = False
+
+    with Spinner(" ", tcolors.CYAN_BOLD):
+        try:
+            subprocess.check_output(["git", "remote", "set-url" if originExists else "add", "origin", remote],
+                stderr=subprocess.STDOUT)
+        except subprocess.CalledProcessError:
+            error("action failed")
+            return
         time.sleep(0.5)
 
     print(colorize("done.", tcolors.GREEN_BOLD))
@@ -81,13 +106,16 @@ parser = argparse.ArgumentParser()
 subparser = parser.add_subparsers(dest='command')
 
 create = subparser.add_parser('create')
-create.add_argument("-m", type=str, required=False)
+create.add_argument("-m", type=str, help="specify commit message", required=False)
 
 commit = subparser.add_parser('commit')
-commit.add_argument("-m", type=str, required=False)
+commit.add_argument("-m", type=str, help="specify commit message", required=False)
 
-push = subparser.add_parser('push');
-push.add_argument("-c", action="store_true", required=False)
+push = subparser.add_parser('push')
+push.add_argument("-c", action="store_true", help="commit before push", required=False)
+
+origin = subparser.add_parser('origin')
+origin.add_argument("-s", type=str, help="origin remote url", required=True)
 
 args = parser.parse_args()
 
@@ -106,5 +134,8 @@ elif args.command == 'push':
         pushChanges(args.c)
     else:
         pushChanges()
+elif args.command == 'origin':
+    if(args.s != None):
+        changeRemote(args.s)
 else:
     error("specify a command. (--help)")
