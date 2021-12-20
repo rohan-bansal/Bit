@@ -8,6 +8,15 @@ path = os.getcwd()
 def error(message):
     print(colorize("err: " + message, tcolors.RED_BOLD))
 
+def getOriginURL():
+    try:
+        currentBranch = subprocess.check_output(['git', 'branch', '--show-current'],
+            stderr=subprocess.STDOUT, encoding='UTF-8').strip()
+    except subprocess.CalledProcessError:
+        error("is the CWD a git repository?")
+        return None
+    return currentBranch
+
 def createRepo(message="initial commit"):
     print(colorize("initializing repository in ", tcolors.GREEN_BOLD) + colorize(path, tcolors.CYAN))
 
@@ -31,12 +40,8 @@ def createRepo(message="initial commit"):
     print(colorize("done.", tcolors.GREEN_BOLD))
 
 def commitChanges(promptMessage=None):
-    try:
-        currentBranch = subprocess.check_output(['git', 'branch', '--show-current'],
-            stderr=subprocess.STDOUT, encoding='UTF-8').strip()
-    except subprocess.CalledProcessError:
-        error("is the CWD a git repository?")
-        return
+    currentBranch = getOriginURL()
+    if currentBranch == None: return
     
     print(colorize("committing changes to " + currentBranch, tcolors.GREEN_BOLD))
 
@@ -58,12 +63,8 @@ def commitChanges(promptMessage=None):
     print(colorize("done.", tcolors.GREEN_BOLD))
 
 def pushChanges(commitBeforePush=False):
-    try:
-        currentBranch = subprocess.check_output(['git', 'branch', '--show-current'],
-            stderr=subprocess.STDOUT, encoding='UTF-8').strip()
-    except subprocess.CalledProcessError:
-        error("is the CWD a git repository?")
-        return
+    currentBranch = getOriginURL()
+    if currentBranch == None: return
 
     if commitBeforePush:
         commitChanges()
@@ -108,12 +109,8 @@ def changeRemote(remote):
     print(colorize("done.", tcolors.GREEN_BOLD))
 
 def pullChanges():
-    try:
-        currentBranch = subprocess.check_output(['git', 'branch', '--show-current'],
-            stderr=subprocess.STDOUT, encoding='UTF-8').strip()
-    except subprocess.CalledProcessError:
-        error("is the CWD a git repository?")
-        return
+    currentBranch = getOriginURL()
+    if currentBranch == None: return
 
     print(colorize("pulling changes from origin " + currentBranch, tcolors.GREEN_BOLD))
 
