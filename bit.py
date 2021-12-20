@@ -129,7 +129,39 @@ def pullChanges():
 
     print(colorize("done.", tcolors.GREEN_BOLD))
 
+def switchBranch(branch):
+    print(colorize("switching to branch: " + branch, tcolors.GREEN_BOLD))
 
+    branchExists = True
+
+    with Spinner(" ", tcolors.CYAN_BOLD):
+        try:
+            subprocess.check_output(["git", "checkout", branch], stderr=subprocess.STDOUT)
+        except subprocess.CalledProcessError:
+            erase()
+            branchExists = False
+            
+        time.sleep(0.5)
+
+    if branchExists:
+        print(colorize("done.", tcolors.GREEN_BOLD))
+        return
+ 
+    response = input(colorize("branch does not exist. create? [y/n]: ", tcolors.YELLOW))
+    if response == "n":
+        error("aborted.")
+        return
+    
+    print(colorize("creating new branch: " + branch, tcolors.GREEN_BOLD))
+    with Spinner(" ", tcolors.CYAN_BOLD):
+        try:
+            subprocess.check_output(["git", "checkout", "-b", branch], stderr=subprocess.STDOUT)
+        except subprocess.CalledProcessError:
+            erase()
+            error("could not create a new branch.")
+        time.sleep(0.5)
+    
+    print(colorize("done.", tcolors.GREEN_BOLD))
 
 parser = argparse.ArgumentParser()
 subparser = parser.add_subparsers(dest='command')
@@ -147,6 +179,9 @@ origin = subparser.add_parser('origin')
 origin.add_argument("-s", type=str, help="origin remote url", required=True)
 
 pull = subparser.add_parser('pull')
+
+checkout = subparser.add_parser('checkout')
+checkout.add_argument("branch", type=str, help="branch to checkout")
 
 args = parser.parse_args()
 
@@ -170,5 +205,7 @@ elif args.command == 'origin':
         changeRemote(args.s)
 elif args.command == 'pull':
     pullChanges()
+elif args.command == 'checkout':
+    switchBranch(args.branch)
 else:
     error("specify a command. (--help)")
