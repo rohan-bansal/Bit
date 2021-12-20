@@ -129,6 +129,21 @@ def pullChanges():
 
     print(colorize("done.", tcolors.GREEN_BOLD))
 
+def fetchChanges():
+    print(colorize("fetching all remote changes", tcolors.GREEN_BOLD))
+    
+    with Spinner(" ", tcolors.CYAN_BOLD):
+        try:
+            subprocess.check_output(["git", "fetch", "--all"],
+                stderr=subprocess.STDOUT)
+        except subprocess.CalledProcessError as e:
+            error("action failed for unknown reasons.")
+            return
+        time.sleep(0.5)
+
+    print(colorize("done.", tcolors.GREEN_BOLD))
+
+
 def switchBranch(branch):
     print(colorize("switching to branch: " + branch, tcolors.GREEN_BOLD))
 
@@ -180,6 +195,8 @@ origin.add_argument("-s", type=str, help="origin remote url", required=True)
 
 pull = subparser.add_parser('pull')
 
+fetch = subparser.add_parser('fetchall')
+
 checkout = subparser.add_parser('checkout')
 checkout.add_argument("branch", type=str, help="branch to checkout")
 
@@ -205,6 +222,8 @@ elif args.command == 'origin':
         changeRemote(args.s)
 elif args.command == 'pull':
     pullChanges()
+elif args.command == 'fetchall':
+    fetchChanges()
 elif args.command == 'checkout':
     switchBranch(args.branch)
 else:
