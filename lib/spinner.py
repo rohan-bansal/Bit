@@ -1,7 +1,7 @@
 import itertools, sys, time, threading
 from lib.textlib import colorize
 
-# rotating spinner :D
+# rotating spinner
 class Spinner:
 
     # write the spinner text
