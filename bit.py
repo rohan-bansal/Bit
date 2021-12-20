@@ -107,6 +107,33 @@ def changeRemote(remote):
 
     print(colorize("done.", tcolors.GREEN_BOLD))
 
+def pullChanges():
+    try:
+        currentBranch = subprocess.check_output(['git', 'branch', '--show-current'],
+            stderr=subprocess.STDOUT, encoding='UTF-8').strip()
+    except subprocess.CalledProcessError:
+        error("is the CWD a git repository?")
+        return
+
+    print(colorize("pulling changes from origin " + currentBranch, tcolors.GREEN_BOLD))
+
+    with Spinner(" ", tcolors.CYAN_BOLD):
+        try:
+            subprocess.check_output(["git", "pull", "origin", currentBranch],
+                stderr=subprocess.STDOUT)
+        except subprocess.CalledProcessError as e:
+            erase();
+            if "conflict" in e.output:
+                error("merge conflicts, please fix before pulling again.")
+            else:
+                error("action failed for unknown reasons.")
+            return
+        time.sleep(0.5)
+
+    print(colorize("done.", tcolors.GREEN_BOLD))
+
+
+
 parser = argparse.ArgumentParser()
 subparser = parser.add_subparsers(dest='command')
 
@@ -121,6 +148,8 @@ push.add_argument("-c", action="store_true", help="commit before push", required
 
 origin = subparser.add_parser('origin')
 origin.add_argument("-s", type=str, help="origin remote url", required=True)
+
+pull = subparser.add_parser('pull')
 
 args = parser.parse_args()
 
@@ -142,5 +171,7 @@ elif args.command == 'push':
 elif args.command == 'origin':
     if(args.s != None):
         changeRemote(args.s)
+elif args.command == 'pull':
+    pullChanges()
 else:
     error("specify a command. (--help)")
