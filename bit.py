@@ -1,4 +1,4 @@
-import os, sys, subprocess, argparse, time
+import os, subprocess, argparse, time
 from lib.tcolors import tcolors
 from lib.spinner import Spinner
 from lib.textlib import colorize, getRandomPhrase, erase
