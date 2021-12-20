@@ -57,7 +57,25 @@ def commitChanges(promptMessage=None):
 
     print(colorize("done.", tcolors.GREEN_BOLD))
 
+def pushChanges(commitBeforePush=False):
+    try:
+        currentBranch = subprocess.check_output(['git', 'branch', '--show-current'],
+            stderr=subprocess.STDOUT, encoding='UTF-8').strip()
+    except subprocess.CalledProcessError:
+        error("is the CWD a git repository?")
+        return
 
+    if commitBeforePush:
+        commitChanges()
+
+    print(colorize("pushing local " + currentBranch + " to remote", tcolors.GREEN_BOLD))
+
+    with Spinner(" ", tcolors.CYAN_BOLD):
+        subprocess.check_output(["git", "push", "origin", currentBranch],
+            stderr=subprocess.STDOUT)
+        time.sleep(0.5)
+
+    print(colorize("done.", tcolors.GREEN_BOLD))
 
 parser = argparse.ArgumentParser()
 subparser = parser.add_subparsers(dest='command')
@@ -65,8 +83,11 @@ subparser = parser.add_subparsers(dest='command')
 create = subparser.add_parser('create')
 create.add_argument("-m", type=str, required=False)
 
-push = subparser.add_parser('commit')
-push.add_argument("-m", type=str, required=False)
+commit = subparser.add_parser('commit')
+commit.add_argument("-m", type=str, required=False)
+
+push = subparser.add_parser('push');
+push.add_argument("-c", action="store_true", required=False)
 
 args = parser.parse_args()
 
@@ -80,3 +101,10 @@ elif args.command == 'commit':
         commitChanges(args.m)
     else:
         commitChanges()
+elif args.command == 'push':
+    if(args.c != None):
+        pushChanges(args.c)
+    else:
+        pushChanges()
+else:
+    error("specify a command. (--help)")
