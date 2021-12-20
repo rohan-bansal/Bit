@@ -120,7 +120,7 @@ def pullChanges():
                 stderr=subprocess.STDOUT)
         except subprocess.CalledProcessError as e:
             erase();
-            if "conflict" in e.output:
+            if "conflict" in str(e.output):
                 error("merge conflicts, please fix before pulling again.")
             else:
                 error("action failed for unknown reasons.")
