@@ -2,6 +2,8 @@
 
 # CHMOD +X THIS FILE
 
+# note: will only install to .bashrc cuz i'm too lazy to check for other shells
+
 loc=$(pwd)/bit.py
 
 echo "Installing program..."
