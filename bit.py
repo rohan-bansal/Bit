@@ -71,14 +71,15 @@ def pushChanges(commitBeforePush=False, forcePush=False):
 
     print(colorize("pushing local " + currentBranch + " to remote", tcolors.GREEN_BOLD))
 
+    if forcePush:
+        toForceOrNotToForce = input(colorize("confirm force push [y/n]:  ", tcolors.YELLOW))
+        if not toForceOrNotToForce:
+            error("aborted.")
+            return
+
     with Spinner(" ", tcolors.CYAN_BOLD):
         try:
             if forcePush:
-                toForceOrNotToForce = input(colorize("confirm force push [y/n]:  ", tcolors.YELLOW))
-                if not toForceOrNotToForce:
-                    erase()
-                    error("aborted.")
-                    return
                 subprocess.check_output(["git", "push", "origin", currentBranch, "--force"],
                     stderr=subprocess.STDOUT)
             else:
