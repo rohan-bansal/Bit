@@ -1,4 +1,4 @@
-import os, subprocess, argparse, time
+import os, subprocess, argparse, time, webbrowser
 from lib.tcolors import tcolors
 from lib.spinner import Spinner
 from lib.textlib import colorize, getRandomPhrase, erase
@@ -178,6 +178,9 @@ def switchBranch(branch):
     
     print(colorize("done.", tcolors.GREEN_BOLD))
 
+def createNewRepo():
+    webbrowser.open('https://github.com/new')
+
 parser = argparse.ArgumentParser()
 subparser = parser.add_subparsers(dest='command')
 
@@ -196,6 +199,8 @@ origin.add_argument("-s", type=str, help="origin remote url", required=True)
 pull = subparser.add_parser('pull')
 
 fetch = subparser.add_parser('fetchall')
+
+newrepo = subparser.add_parser('newrepo')
 
 checkout = subparser.add_parser('checkout')
 checkout.add_argument("branch", type=str, help="branch to checkout")
@@ -226,5 +231,7 @@ elif args.command == 'fetchall':
     fetchChanges()
 elif args.command == 'checkout':
     switchBranch(args.branch)
+elif args.command == 'newrepo':
+    createNewRepo()
 else:
     error("specify a command. (--help)")
