@@ -66,9 +66,6 @@ def pushChanges(commitBeforePush=False, forcePush=False):
     currentBranch = getOriginURL()
     if currentBranch == None: return
 
-    if forcePush:
-        print("here")
-
     if commitBeforePush:
         commitChanges()
 
@@ -76,8 +73,17 @@ def pushChanges(commitBeforePush=False, forcePush=False):
 
     with Spinner(" ", tcolors.CYAN_BOLD):
         try:
-            subprocess.check_output(["git", "push", "origin", currentBranch],
-                stderr=subprocess.STDOUT)
+            if forcePush:
+                toForceOrNotToForce = input(colorize("confirm force push [y/n]:  ", tcolors.YELLOW))
+                if not toForceOrNotToForce:
+                    erase()
+                    error("aborted.")
+                    return
+                subprocess.check_output(["git", "push", "origin", currentBranch, "--force"],
+                    stderr=subprocess.STDOUT)
+            else:
+                subprocess.check_output(["git", "push", "origin", currentBranch],
+                    stderr=subprocess.STDOUT)
         except subprocess.CalledProcessError as e:
             erase();
             if "git pull" in str(e.output):
@@ -110,6 +116,13 @@ def changeRemote(remote):
         time.sleep(0.5)
 
     print(colorize("done.", tcolors.GREEN_BOLD))
+
+def printRemote():
+    try:
+        url = str(subprocess.check_output(["git", "config", "--get", "remote.origin.url"], stderr=subprocess.STDOUT), encoding='UTF-8').strip()
+        print(colorize(url, tcolors.GREEN))
+    except subprocess.CalledProcessError:
+        error("no remote url set.")
 
 def pullChanges():
     currentBranch = getOriginURL()
@@ -198,7 +211,7 @@ push.add_argument("-c", action="store_true", help="commit before push", required
 push.add_argument("-f", action="store_true", help="force push", required=False)
 
 origin = subparser.add_parser('origin')
-origin.add_argument("-s", type=str, help="origin remote url", required=True)
+origin.add_argument("-s", type=str, help="origin remote url", required=False)
 
 pull = subparser.add_parser('pull')
 
@@ -226,6 +239,8 @@ elif args.command == 'push':
 elif args.command == 'origin':
     if(args.s != None):
         changeRemote(args.s)
+    else:
+        printRemote()
 elif args.command == 'pull':
     pullChanges()
 elif args.command == 'fetchall':
