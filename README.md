@@ -35,7 +35,7 @@ Will initialize a new repository in the current directory.
 
 Will initialize a new repository in the current directory, and run `git add .` and `git commit -m <msg>`
 
-
+<br/>
 
 **`bit commit`**
 
@@ -45,7 +45,7 @@ Will run `git add .` and `git commit -m <msg>` where msg is prompted (press ente
 
 Will run `git add .` and `git commit -m <msg>`
 
-
+<br/>
 
 **`bit push`**
 
@@ -59,7 +59,7 @@ Will run `bit commit` to add/commit all files, then push
 
 Will force push changes (with a confirmation prompt)
 
-
+<br/>
 
 **`bit origin`**
 
@@ -69,25 +69,25 @@ Will return the currently configured remote URL (error if does not exist)
 
 Will add the remote URL if it does not exist, and change it if it does
 
-
+<br/>
 
 **`bit pull`**
 
 Will pull changes from current branch (error if merge conflict)
 
-
+<br/>
 
 **`bit fetchall`**
 
 Will fetch all remote changes with `git fetch --all`
 
-
+<br/>
 
 **`bit newrepo`**
 
 Will launch a browser tab to create a new repo on GitHub
 
-
+<br/>
 
 **`bit checkout <branch>`**
 
