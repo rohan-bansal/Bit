@@ -62,9 +62,12 @@ def commitChanges(promptMessage=None):
 
     print(colorize("done.", tcolors.GREEN_BOLD))
 
-def pushChanges(commitBeforePush=False):
+def pushChanges(commitBeforePush=False, forcePush=False):
     currentBranch = getOriginURL()
     if currentBranch == None: return
+
+    if forcePush:
+        print("here")
 
     if commitBeforePush:
         commitChanges()
@@ -192,6 +195,7 @@ commit.add_argument("-m", type=str, help="specify commit message", required=Fals
 
 push = subparser.add_parser('push')
 push.add_argument("-c", action="store_true", help="commit before push", required=False)
+push.add_argument("-f", action="store_true", help="force push", required=False)
 
 origin = subparser.add_parser('origin')
 origin.add_argument("-s", type=str, help="origin remote url", required=True)
@@ -218,10 +222,7 @@ elif args.command == 'commit':
     else:
         commitChanges()
 elif args.command == 'push':
-    if(args.c != None):
-        pushChanges(args.c)
-    else:
-        pushChanges()
+    pushChanges(commitBeforePush=(args.c), forcePush=(args.f))
 elif args.command == 'origin':
     if(args.s != None):
         changeRemote(args.s)
