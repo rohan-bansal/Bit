@@ -73,7 +73,7 @@ def pushChanges(commitBeforePush=False, forcePush=False):
 
     if forcePush:
         toForceOrNotToForce = input(colorize("confirm force push [y/n]:  ", tcolors.YELLOW))
-        if not toForceOrNotToForce:
+        if toForceOrNotToForce == "n":
             error("aborted.")
             return
 
